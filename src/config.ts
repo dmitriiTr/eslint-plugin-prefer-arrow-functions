@@ -1,5 +1,6 @@
 export const DEFAULT_OPTIONS = {
   allowNamedFunctions: false,
+  allowThis: false,
   classPropertiesAllowed: false,
   disallowPrototype: false,
   returnStyle: 'unchanged',

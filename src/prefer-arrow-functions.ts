@@ -19,6 +19,7 @@ export default {
         additionalProperties: false,
         properties: {
           allowNamedFunctions: { type: 'boolean' },
+          allowThis: { type: 'boolean' },
           classPropertiesAllowed: { type: 'boolean' },
           disallowPrototype: { type: 'boolean' },
           returnStyle: {
@@ -39,6 +40,7 @@ export default {
         ? options[name]
         : DEFAULT_OPTIONS[name];
     const allowNamedFunctions = getOption('allowNamedFunctions');
+    const allowThis = getOption('allowThis');
     const singleReturnOnly = getOption('singleReturnOnly');
     const classPropertiesAllowed = getOption('classPropertiesAllowed');
     const disallowPrototype = getOption('disallowPrototype');
@@ -237,7 +239,7 @@ export default {
         !isGeneratorFunction(node) &&
         !isAssertionFunction(node) &&
         !isOverloadedFunction(node) &&
-        !containsThis(node) &&
+        (!containsThis(node) || !allowThis) &&
         !containsSuper(node) &&
         !containsArguments(node) &&
         !containsNewDotTarget(node) &&
@@ -265,7 +267,7 @@ export default {
           });
         }
       },
-      ':matches(ClassProperty, MethodDefinition, Property)[key.name][value.type="FunctionExpression"][kind!=/^(get|set)$/]':
+      ':matches(ClassProperty, MethodDefinition, Property)[key.name][value.type="FunctionExpression"][kind!=/^(get|set|constructor)$/]':
         (node) => {
           const propName = node.key.name;
           const functionNode = node.value;
